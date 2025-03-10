@@ -1,0 +1,20 @@
+﻿<Window x:Class="QuizzApp.Result"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:bc="clr-namespace:BetterWpfControls;assembly=BetterWpfControls"
+        Title="ResultWindow" Height="500" Width="1000">
+    <DockPanel>
+        <ToolBar x:Name="toolBar"
+                 DockPanel.Dock="Top"
+                 BorderBrush="LightGray"
+                 BorderThickness="1">
+            <bc:ImageButton x:Name="buttonClear" Height="32" Width="32" VerticalAlignment="Center"
+                            Source="pack://application:,,,/QuizzApp;component/Images/clear.png"
+                            ToolTip="Clear All" Click="OnClearAllClicked">
+            </bc:ImageButton>
+        </ToolBar>
+        <Grid>
+            <DataGrid x:Name="ResultDataGrid" AutoGenerateColumns="True" />
+        </Grid>
+    </DockPanel>
+</Window>
