@@ -64,10 +64,10 @@ namespace QuizzApp
                     var questionText = worksheet.Cells[row, 1].Text;
                     var answers = new List<Choice>
                     {
-                        new Choice { Text = worksheet.Cells[row, 2].Text },
-                        new Choice { Text = worksheet.Cells[row, 3].Text },
-                        new Choice { Text = worksheet.Cells[row, 4].Text },
-                        new Choice { Text = worksheet.Cells[row, 5].Text }
+                        new Choice { Text = worksheet.Cells[row, 2].Text ,ChoiceNum = ChoiceNumber.A},
+                        new Choice { Text = worksheet.Cells[row, 3].Text ,ChoiceNum = ChoiceNumber.B},
+                        new Choice { Text = worksheet.Cells[row, 4].Text ,ChoiceNum = ChoiceNumber.C},
+                        new Choice { Text = worksheet.Cells[row, 5].Text ,ChoiceNum = ChoiceNumber.D}
                     };
                     var correctAnswer = worksheet.Cells[row, 6].Text;
 
@@ -102,30 +102,24 @@ namespace QuizzApp
         private void AnswerButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            ChoiceNumber selectedAnswer;
+            if (button == null) return;
 
-            switch (button.Name)
-            {
-                case "AnswerButtonA":
-                    selectedAnswer = ChoiceNumber.A;
-                    break;
-                case "AnswerButtonB":
-                    selectedAnswer = ChoiceNumber.B;
-                    break;
-                case "AnswerButtonC":
-                    selectedAnswer = ChoiceNumber.C;
-                    break;
-                case "AnswerButtonD":
-                    selectedAnswer = ChoiceNumber.D;
-                    break;
-            }
-
+            ChoiceNumber selectedAnswer = SelectedButtonToChoiceNum(button);
             var currentQuestion = _questions[_currentQuestionIndex];
 
             if (!_answeredQuestions.Contains(currentQuestion))
             {
+                currentQuestion.SelectedChoice = selectedAnswer;
                 _answeredQuestions.Add(currentQuestion);
             }
+
+        }
+
+        public ChoiceNumber SelectedButtonToChoiceNum(Button button)
+        {
+            var buttonName = (string)button.Content;
+
+            return (ChoiceNumber)Enum.Parse(typeof(ChoiceNumber), buttonName);
         }
 
         private void Before_Click(object sender, RoutedEventArgs e)
@@ -156,13 +150,9 @@ namespace QuizzApp
 
             foreach (var question in _answeredQuestions)
             {
-                foreach (var answer in question.Option)
+                if (question.SelectedChoice == question.CorrectChoice)
                 {
-                    //if (answer.IsSelected && answer.Text == question.CorrectOption)
-                    //{
-                    //    correctAnswersCount++;
-                    //    break;
-                    //}
+                    correctAnswersCount++;
                 }
             }
 
@@ -207,6 +197,7 @@ namespace QuizzApp
         B,
         C,
         D,
+        INVALID,
     }
 
     public class Question
@@ -214,6 +205,7 @@ namespace QuizzApp
         public string Text { get; set; }
         public List<Choice> Option { get; set; }
         public ChoiceNumber CorrectChoice { get; set; }
+        public ChoiceNumber SelectedChoice { get; set; }
     }
 
     public class Choice
