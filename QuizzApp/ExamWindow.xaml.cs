@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Linq;
 
-
-
 namespace QuizzApp
 {
     public partial class ExamWindow : Window
@@ -27,6 +25,7 @@ namespace QuizzApp
             InitializeComponent();
             _userName = userName;
             LoadQuestionsFromExcel();
+            ShuffleQuestions();
             DisplayCurrentQuestion();
             DataContext = this;
             StartTimer();
@@ -81,6 +80,12 @@ namespace QuizzApp
             }
         }
 
+        private void ShuffleQuestions()
+        {
+            var random = new Random();
+            _questions = new ObservableCollection<Question>(_questions.OrderBy(q => random.Next()));
+        }
+
         private void DisplayCurrentQuestion()
         {
             if (_currentQuestionIndex < _questions.Count)
@@ -112,13 +117,11 @@ namespace QuizzApp
                 currentQuestion.SelectedChoice = selectedAnswer;
                 _answeredQuestions.Add(currentQuestion);
             }
-
         }
 
         public ChoiceNumber SelectedButtonToChoiceNum(Button button)
         {
             var buttonName = (string)button.Content;
-
             return (ChoiceNumber)Enum.Parse(typeof(ChoiceNumber), buttonName);
         }
 
@@ -197,7 +200,6 @@ namespace QuizzApp
         B,
         C,
         D,
-        INVALID,
     }
 
     public class Question
