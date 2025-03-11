@@ -7,6 +7,7 @@ using OfficeOpenXml;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Linq;
+using System.ComponentModel;
 
 namespace QuizzApp
 {
@@ -52,7 +53,7 @@ namespace QuizzApp
         private void LoadQuestionsFromExcel()
         {
             _questions = new ObservableCollection<Question>();
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
             using (var package = new ExcelPackage(new FileInfo("question1.xlsx")))
             {
                 var worksheet = package.Workbook.Worksheets[0];
@@ -110,11 +111,18 @@ namespace QuizzApp
             if (button == null) return;
 
             ChoiceNumber selectedAnswer = SelectedButtonToChoiceNum(button);
+            AddToAnsweredQuestionTable(selectedAnswer);
+        }
+
+        private void AddToAnsweredQuestionTable(ChoiceNumber selectedAnswer)
+        {
+            if (_questions == null) { return; }
             var currentQuestion = _questions[_currentQuestionIndex];
 
             if (!_answeredQuestions.Contains(currentQuestion))
             {
                 currentQuestion.SelectedChoice = selectedAnswer;
+                currentQuestion.IsCorrectChoice = (selectedAnswer == currentQuestion.CorrectChoice);
                 _answeredQuestions.Add(currentQuestion);
             }
         }
@@ -202,12 +210,31 @@ namespace QuizzApp
         D,
     }
 
-    public class Question
+    public class Question : INotifyPropertyChanged
     {
+        private bool _isCorrectChoice;
+
         public string Text { get; set; }
         public List<Choice> Option { get; set; }
         public ChoiceNumber CorrectChoice { get; set; }
         public ChoiceNumber SelectedChoice { get; set; }
+
+        public bool IsCorrectChoice
+        {
+            get { return _isCorrectChoice; }
+            set
+            {
+                _isCorrectChoice = value;
+                OnPropertyChanged(nameof(IsCorrectChoice));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class Choice

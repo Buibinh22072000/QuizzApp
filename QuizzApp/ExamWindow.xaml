@@ -31,7 +31,26 @@
                     <Button Content="Submit" Margin="10" Width="50" Click="Submit_Click"/>
                 </StackPanel>
                 <TextBlock Text="Danh sách câu hỏi đã trả lời:" Margin="10"/>
-                <ListBox ItemsSource="{Binding AnsweredQuestions}" DisplayMemberPath="Text" Margin="10"/>
+                <ListBox ItemsSource="{Binding AnsweredQuestions}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Text}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsCorrectChoice}" Value="False">
+                                                <Setter Property="Foreground" Value="Red"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsCorrectChoice}" Value="True">
+                                                <Setter Property="Foreground" Value="Black"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
         </ScrollViewer>
     </Grid>
