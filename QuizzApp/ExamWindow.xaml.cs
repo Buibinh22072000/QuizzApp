@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Linq;
 using System.ComponentModel;
+using System.Windows.Documents;
+using System.Windows.Input;
 
 namespace QuizzApp
 {
@@ -70,12 +72,14 @@ namespace QuizzApp
                         new Choice { Text = worksheet.Cells[row, 5].Text ,ChoiceNum = ChoiceNumber.D}
                     };
                     var correctAnswer = worksheet.Cells[row, 6].Text;
+                    var explanation = worksheet.Cells[row, 6].Text;
 
                     _questions.Add(new Question
                     {
                         Text = questionText,
                         Option = answers,
-                        CorrectChoice = (ChoiceNumber)Enum.Parse(typeof(ChoiceNumber), correctAnswer)
+                        CorrectChoice = (ChoiceNumber)Enum.Parse(typeof(ChoiceNumber), correctAnswer),
+                        Explanation = explanation
                     });
                 }
             }
@@ -92,7 +96,19 @@ namespace QuizzApp
             if (_currentQuestionIndex < _questions.Count)
             {
                 var currentQuestion = _questions[_currentQuestionIndex];
-                QuestionTextBlock.Text = currentQuestion.Text;
+
+                QuestionTextBlock.Inlines.Clear();
+
+                Run boldRun = new Run($"Câu hỏi {_currentQuestionIndex + 1}. ")
+                {
+                    FontWeight = FontWeights.Bold
+                };
+
+                Run normalRun = new Run(currentQuestion.Text);
+
+                QuestionTextBlock.Inlines.Add(boldRun);
+                QuestionTextBlock.Inlines.Add(normalRun);
+
                 AnswerTextBlockA.Text = currentQuestion.Option[0].Text;
                 AnswerTextBlockB.Text = currentQuestion.Option[1].Text;
                 AnswerTextBlockC.Text = currentQuestion.Option[2].Text;
@@ -103,6 +119,22 @@ namespace QuizzApp
                 MessageBox.Show("You have completed the exam!");
                 this.Close();
             }
+        }
+        private void AnsweredQuestionsListBox_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            if (listBox == null) return;
+
+            var selectedQuestion = listBox.SelectedItem as Question;
+            if (selectedQuestion == null) return;
+
+            ExplanationTextBlock.Text = $"Giải thích: {selectedQuestion.Explanation}\nĐáp án đúng: {selectedQuestion.CorrectChoice}";
+            ExplanationPopup.IsOpen = true;
+        }
+
+        private void ClosePopup_Click(object sender, RoutedEventArgs e)
+        {
+            ExplanationPopup.IsOpen = false;
         }
 
         private void AnswerButton_Click(object sender, RoutedEventArgs e)
@@ -213,11 +245,11 @@ namespace QuizzApp
     public class Question : INotifyPropertyChanged
     {
         private bool _isCorrectChoice;
-
         public string Text { get; set; }
         public List<Choice> Option { get; set; }
         public ChoiceNumber CorrectChoice { get; set; }
         public ChoiceNumber SelectedChoice { get; set; }
+        public string Explanation { get; set; }
 
         public bool IsCorrectChoice
         {

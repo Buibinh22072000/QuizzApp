@@ -1,28 +1,28 @@
 ﻿<Window x:Class="QuizzApp.ExamWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Exam" Height="400" Width="600">
+        Title="Exam" Height="600" Width="800">
     <Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <TextBlock Name="QuestionTextBlock" Margin="10"/>
+                <TextBlock Name="QuestionTextBlock" Margin="10" Width="700" TextWrapping="Wrap" VerticalAlignment="Top"/>
                 <TextBlock Name="TimerTextBlock" Margin="10" HorizontalAlignment="Right"/>
                 <StackPanel Name="AnswersStackPanel" Margin="10">
                     <StackPanel Orientation="Horizontal" Margin="5">
-                        <Button Name="AnswerButtonA" Content="A" Width="30" Click="AnswerButton_Click"/>
-                        <TextBlock Name="AnswerTextBlockA" Margin="10,0,0,0"/>
+                        <Button Name="AnswerButtonA" Content="A" Width="30" Height="30" Click="AnswerButton_Click"/>
+                        <TextBlock Name="AnswerTextBlockA" Margin="10,0,0,0" Width="700" TextWrapping="Wrap"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="5">
-                        <Button Name="AnswerButtonB" Content="B" Width="30" Click="AnswerButton_Click"/>
-                        <TextBlock Name="AnswerTextBlockB" Margin="10,0,0,0"/>
+                        <Button Name="AnswerButtonB" Content="B" Width="30" Height="30" Click="AnswerButton_Click"/>
+                        <TextBlock Name="AnswerTextBlockB" Margin="10,0,0,0" Width="700" TextWrapping="Wrap"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="5">
-                        <Button Name="AnswerButtonC" Content="C" Width="30" Click="AnswerButton_Click"/>
-                        <TextBlock Name="AnswerTextBlockC" Margin="10,0,0,0"/>
+                        <Button Name="AnswerButtonC" Content="C" Width="30" Height="30" Click="AnswerButton_Click"/>
+                        <TextBlock Name="AnswerTextBlockC" Margin="10,0,0,0" Width="700" TextWrapping="Wrap"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="5">
-                        <Button Name="AnswerButtonD" Content="D" Width="30" Click="AnswerButton_Click"/>
-                        <TextBlock Name="AnswerTextBlockD" Margin="10,0,0,0"/>
+                        <Button Name="AnswerButtonD" Content="D" Width="30" Height="30" Click="AnswerButton_Click" />
+                        <TextBlock Name="AnswerTextBlockD" Margin="10,0,0,0" Width="700" TextWrapping="Wrap"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -31,27 +31,37 @@
                     <Button Content="Submit" Margin="10" Width="50" Click="Submit_Click"/>
                 </StackPanel>
                 <TextBlock Text="Danh sách câu hỏi đã trả lời:" Margin="10"/>
-                <ListBox ItemsSource="{Binding AnsweredQuestions}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Text}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsCorrectChoice}" Value="False">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsCorrectChoice}" Value="True">
-                                                <Setter Property="Foreground" Value="Black"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
+                    <ListBox ItemsSource="{Binding AnsweredQuestions}" MouseDoubleClick="AnsweredQuestionsListBox_DoubleClick">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Text}" Width="700" TextWrapping="Wrap">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsCorrectChoice}" Value="False">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsCorrectChoice}" Value="True">
+                                                    <Setter Property="Foreground" Value="Black"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
             </StackPanel>
         </ScrollViewer>
+        <Popup Name="ExplanationPopup" Placement="Mouse" StaysOpen="False">
+            <Border Background="White" BorderBrush="Black" BorderThickness="1" Padding="10">
+                <StackPanel>
+                    <TextBlock Name="ExplanationTextBlock" TextWrapping="Wrap" Width="300"/>
+                    <Button Content="Close" Click="ClosePopup_Click" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>
