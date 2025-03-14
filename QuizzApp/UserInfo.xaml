@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QuizzApp"
         mc:Ignorable="d"
-        Title="UserInfo" Height="450" Width="800">
+        Title="UserInfo" Height="600" Width="800">
     <Grid Background="LightBlue">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Nhập thông tin của bạn" FontSize="20" Margin="10"/>
